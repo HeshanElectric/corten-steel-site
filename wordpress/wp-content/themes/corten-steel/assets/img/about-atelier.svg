@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 720 900" role="img" aria-hidden="true">
+  <rect width="720" height="900" fill="#1a1410"/>
+  <circle cx="360" cy="340" r="180" fill="#b85c38"/>
+  <circle cx="360" cy="340" r="120" fill="#6b2e1c"/>
+  <rect x="80" y="560" width="560" height="220" fill="#8a3a22"/>
+  <path fill="#d97706" opacity="0.4" d="M80 560 L 360 480 L 640 560 L 640 780 L 80 780 Z"/>
+  <text x="360" y="850" text-anchor="middle" fill="#f4efe8" font-family="Georgia, serif" font-size="22" letter-spacing="6">ATELIER</text>
+</svg>

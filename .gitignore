@@ -1,0 +1,48 @@
+# Local secrets — never commit a real .env file
+.env
+
+# Editor and OS noise
+*.log
+*.swp
+*.swo
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/
+
+# Let's Encrypt account data, live certificates, and ACME webroot
+certbot/conf/*
+!certbot/conf/.gitkeep
+certbot/www/*
+!certbot/www/.gitkeep
+
+# Optional local bind-mount for database dumps (named volume db_data is used at runtime)
+db/*
+!db/.gitkeep
+
+# WordPress runtime files live in the wp_data named volume.
+# Keep custom theme, plugin, and PHP config in git; ignore generated core/uploads.
+wordpress/*
+!wordpress/.gitkeep
+!wordpress/php/
+!wordpress/php/**
+!wordpress/wp-content/
+wordpress/wp-content/*
+!wordpress/wp-content/themes/
+!wordpress/wp-content/plugins/
+wordpress/wp-content/themes/*
+!wordpress/wp-content/themes/corten-steel/
+!wordpress/wp-content/themes/corten-steel/**
+wordpress/wp-content/plugins/*
+!wordpress/wp-content/plugins/corten-core/
+!wordpress/wp-content/plugins/corten-core/**
+wordpress/wp-content/uploads/
+wordpress/wp-content/cache/
+wordpress/wp-content/upgrade/
+wordpress/wp-content/upgrade-temp-backup/
+wordpress/wp-content/backup-db/
+wordpress/wp-content/debug.log
+
+# Local or uploaded TLS material (Let's Encrypt lives under certbot/conf)
+nginx/ssl/**
+!nginx/ssl/.gitkeep

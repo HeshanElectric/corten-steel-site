@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 640" role="img" aria-hidden="true">
+  <rect width="900" height="640" fill="#161311"/>
+  <path fill="#8a3a22" d="M80 480 L 240 160 L 820 220 L 700 560 Z"/>
+  <path fill="#d97706" opacity="0.45" d="M180 500 C 320 200, 640 180, 780 470"/>
+  <path fill="none" stroke="#f4efe8" stroke-opacity="0.35" stroke-width="2" d="M120 430 L 760 250"/>
+  <path fill="none" stroke="#b85c38" stroke-width="6" d="M100 500 C 280 360, 520 520, 800 340"/>
+  <text x="60" y="600" fill="#f4efe8" font-family="monospace" font-size="18" letter-spacing="4">FORMING</text>
+</svg>

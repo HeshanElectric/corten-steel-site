@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 640" role="img" aria-hidden="true">
+  <rect width="900" height="640" fill="#141210"/>
+  <rect x="70" y="90" width="760" height="420" fill="#5c2a1c"/>
+  <rect x="110" y="130" width="680" height="340" fill="#c45c2a"/>
+  <circle cx="240" cy="280" r="70" fill="#d97706" opacity="0.4"/>
+  <circle cx="460" cy="300" r="110" fill="#8a3a22" opacity="0.5"/>
+  <circle cx="680" cy="250" r="50" fill="#f4efe8" opacity="0.12"/>
+  <rect x="110" y="390" width="680" height="80" fill="#1a1410" opacity="0.35"/>
+  <text x="60" y="600" fill="#f4efe8" font-family="monospace" font-size="18" letter-spacing="4">FINISH</text>
+</svg>

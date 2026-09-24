@@ -1,0 +1,140 @@
+name: corten-steel
+
+services:
+  nginx:
+    image: ${NGINX_IMAGE:-nginx:1.27.5-alpine}
+    restart: unless-stopped
+    depends_on:
+      wordpress:
+        condition: service_healthy
+    ports:
+      - "80:80"
+      - "443:443"
+    environment:
+      DOMAIN: ${DOMAIN}
+    volumes:
+      # Official Nginx image envsubst: *.template -> /etc/nginx/conf.d/
+      - ./nginx/conf.d/wordpress.conf:/etc/nginx/templates/wordpress.conf.template:ro
+      - ./nginx/docker-entrypoint.d/15-prepare-nginx.sh:/docker-entrypoint.d/15-prepare-nginx.sh:ro
+      - wp_data:/var/www/html:ro
+      - ./wordpress/wp-content/themes/corten-steel:/var/www/html/wp-content/themes/corten-steel:ro
+      - ./wordpress/wp-content/plugins/corten-core:/var/www/html/wp-content/plugins/corten-core:ro
+      - ./certbot/www:/var/www/certbot:ro
+      - ./certbot/conf:/etc/letsencrypt
+    networks:
+      - frontend
+    healthcheck:
+      test: ["CMD-SHELL", "wget -qO- http://127.0.0.1/nginx-health || exit 1"]
+      interval: 30s
+      timeout: 5s
+      retries: 5
+      start_period: 20s
+
+  wordpress:
+    image: ${WORDPRESS_IMAGE:-wordpress:6.8.3-php8.3-fpm}
+    restart: unless-stopped
+    depends_on:
+      db:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    environment:
+      WORDPRESS_DB_HOST: ${WORDPRESS_DB_HOST}
+      WORDPRESS_DB_NAME: ${WORDPRESS_DB_NAME}
+      WORDPRESS_DB_USER: ${WORDPRESS_DB_USER}
+      WORDPRESS_DB_PASSWORD: ${WORDPRESS_DB_PASSWORD}
+      WORDPRESS_TABLE_PREFIX: ${WORDPRESS_TABLE_PREFIX}
+      WP_REDIS_HOST: ${WP_REDIS_HOST}
+      WP_REDIS_PORT: ${WP_REDIS_PORT}
+      WORDPRESS_CONFIG_EXTRA: |
+        define('WP_REDIS_HOST', getenv('WP_REDIS_HOST') ?: 'redis');
+        define('WP_REDIS_PORT', intval(getenv('WP_REDIS_PORT') ?: '6379'));
+        if (!empty($$_SERVER['HTTP_X_FORWARDED_PROTO']) && $$_SERVER['HTTP_X_FORWARDED_PROTO'] === 'https') {
+          $$_SERVER['HTTPS'] = 'on';
+        }
+    volumes:
+      - wp_data:/var/www/html
+      - ./wordpress/wp-content/themes/corten-steel:/var/www/html/wp-content/themes/corten-steel
+      - ./wordpress/wp-content/plugins/corten-core:/var/www/html/wp-content/plugins/corten-core
+      - ./wordpress/php/conf.d/uploads.ini:/usr/local/etc/php/conf.d/uploads.ini:ro
+    networks:
+      - frontend
+      - backend
+    healthcheck:
+      test: ["CMD-SHELL", "php-fpm -t || exit 1"]
+      interval: 30s
+      timeout: 5s
+      retries: 5
+      start_period: 40s
+
+  db:
+    image: ${MARIADB_IMAGE:-mariadb:11.4}
+    restart: unless-stopped
+    environment:
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
+      MYSQL_DATABASE: ${MYSQL_DATABASE}
+      MYSQL_USER: ${MYSQL_USER}
+      MYSQL_PASSWORD: ${MYSQL_PASSWORD}
+      MARIADB_AUTO_UPGRADE: "1"
+    volumes:
+      - db_data:/var/lib/mysql
+    networks:
+      - backend
+    command:
+      - --character-set-server=utf8mb4
+      - --collation-server=utf8mb4_unicode_ci
+      - --innodb-buffer-pool-size=256M
+      - --skip-name-resolve
+    healthcheck:
+      test: ["CMD", "healthcheck.sh", "--connect", "--innodb_initialized"]
+      interval: 10s
+      timeout: 5s
+      retries: 12
+      start_period: 30s
+
+  redis:
+    image: ${REDIS_IMAGE:-redis:7.4.11-alpine}
+    restart: unless-stopped
+    volumes:
+      - redis_data:/data
+    networks:
+      - backend
+    command:
+      - redis-server
+      - --appendonly
+      - "yes"
+      - --maxmemory
+      - 256mb
+      - --maxmemory-policy
+      - allkeys-lru
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 3s
+      retries: 5
+      start_period: 10s
+
+  certbot:
+    image: ${CERTBOT_IMAGE:-certbot/certbot:v5.8.0}
+    restart: unless-stopped
+    depends_on:
+      nginx:
+        condition: service_started
+    volumes:
+      - ./certbot/conf:/etc/letsencrypt
+      - ./certbot/www:/var/www/certbot
+    networks:
+      - frontend
+    entrypoint: /bin/sh -c "trap exit TERM; while :; do certbot renew --quiet; sleep 12h & wait $${!}; done"
+
+networks:
+  frontend:
+    driver: bridge
+  backend:
+    driver: bridge
+    internal: true
+
+volumes:
+  wp_data:
+  db_data:
+  redis_data:
