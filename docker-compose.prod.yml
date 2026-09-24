@@ -53,9 +53,6 @@ services:
       WORDPRESS_CONFIG_EXTRA: |
         define('WP_REDIS_HOST', 'redis');
         define('WP_REDIS_PORT', 6379);
-        if (!empty($_SERVER['HTTP_X_FORWARDED_PROTO']) && $_SERVER['HTTP_X_FORWARDED_PROTO'] === 'https') {
-          $_SERVER['HTTPS'] = 'on';
-        }
         define('WP_HOME', 'http://47.239.52.41:8081');
         define('WP_SITEURL', 'http://47.239.52.41:8081');
     volumes:
