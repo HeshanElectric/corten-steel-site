@@ -46,3 +46,8 @@ wordpress/wp-content/debug.log
 # Local or uploaded TLS material (Let's Encrypt lives under certbot/conf)
 nginx/ssl/**
 !nginx/ssl/.gitkeep
+
+# Local backups and one-off migration scripts — never commit
+db-backup.sql
+uploads-backup/
+search-replace.php

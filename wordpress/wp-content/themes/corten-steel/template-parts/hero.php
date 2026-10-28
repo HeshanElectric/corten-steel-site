@@ -5,7 +5,7 @@
  * @package Corten_Steel
  */
 
-$hero_bg = corten_get_background_url( 'corten_hero_bg', 'hero-scene.jpg' );
+$hero_bg = corten_get_background_url( 'corten_hero_bg', 'hero-scene.webp' );
 ?>
 <section class="hero" aria-label="<?php esc_attr_e( 'Introduction', 'corten-steel' ); ?>">
 	<div class="hero__media" data-parallax aria-hidden="true">

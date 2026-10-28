@@ -9,7 +9,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
-define( 'CORTEN_VERSION', '1.4.5' );
+define( 'CORTEN_VERSION', '1.4.7' );
 define( 'CORTEN_DIR', get_template_directory() );
 define( 'CORTEN_URI', get_template_directory_uri() );
 
@@ -273,7 +273,7 @@ add_action( 'customize_register', 'corten_customize_register' );
  * Keeps main.css free of upload URLs while letting the admin swap photos.
  */
 function corten_print_background_css_vars() {
-	$hero   = corten_get_background_url( 'corten_hero_bg', 'hero-scene.jpg' );
+	$hero   = corten_get_background_url( 'corten_hero_bg', 'hero-scene.webp' );
 	$body   = corten_get_background_url( 'corten_body_texture' );
 	$stats  = corten_get_background_url( 'corten_stats_bg' );
 	$cta    = corten_get_background_url( 'corten_cta_bg' );
@@ -354,7 +354,7 @@ function corten_seo_description() {
 function corten_seo_open_graph( $description = '' ) {
 	$title = wp_get_document_title();
 	$url   = esc_url( home_url( add_query_arg( array() ) ) );
-	$image = corten_get_background_url( 'corten_hero_bg', 'hero-scene.jpg' );
+	$image = corten_get_background_url( 'corten_hero_bg', 'hero-scene.webp' );
 	$type  = is_front_page() ? 'website' : 'article';
 
 	printf( '<meta property="og:title" content="%s">' . "\n", esc_attr( $title ) );

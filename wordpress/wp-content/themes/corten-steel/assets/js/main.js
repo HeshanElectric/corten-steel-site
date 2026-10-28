@@ -14,7 +14,7 @@
 	const finePointer = window.matchMedia("(pointer: fine)").matches;
 
 	const storedTheme = window.localStorage.getItem("corten-theme");
-	const theme = storedTheme || "dark";
+	const theme = storedTheme || "light";
 	root.setAttribute("data-theme", theme);
 	syncThemeToggle(theme);
 

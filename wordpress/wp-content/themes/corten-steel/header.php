@@ -1,11 +1,11 @@
 <!DOCTYPE html>
-<html <?php language_attributes(); ?> data-theme="dark">
+<html <?php language_attributes(); ?> data-theme="light">
 <head>
 	<meta charset="<?php bloginfo( 'charset' ); ?>">
 	<meta name="viewport" content="width=device-width, initial-scale=1">
-	<meta name="theme-color" content="#1A1A1A">
+	<meta name="theme-color" content="#f5f5f0">
 	<?php
-	$preload_hero = corten_get_background_url( 'corten_hero_bg', 'hero-scene.jpg' );
+	$preload_hero = corten_get_background_url( 'corten_hero_bg', 'hero-scene.webp' );
 	if ( $preload_hero ) :
 		?>
 		<link rel="preload" as="image" href="<?php echo esc_url( $preload_hero ); ?>" fetchpriority="high">
@@ -54,8 +54,8 @@
 				<a href="<?php echo esc_url( home_url( '/de/' ) ); ?>" hreflang="de" lang="de">DE</a>
 				<a href="<?php echo esc_url( home_url( '/fr/' ) ); ?>" hreflang="fr" lang="fr">FR</a>
 			</div>
-			<button class="theme-toggle" type="button" data-theme-toggle aria-pressed="true">
-				<span data-theme-label><?php esc_html_e( 'Dark', 'corten-steel' ); ?></span>
+			<button class="theme-toggle" type="button" data-theme-toggle aria-pressed="false">
+				<span data-theme-label><?php esc_html_e( 'Light', 'corten-steel' ); ?></span>
 			</button>
 			<a class="btn btn--primary header-cta btn--magnetic" href="<?php echo esc_url( corten_quote_url() ); ?>" data-magnetic>
 				<span class="btn__label"><?php esc_html_e( 'Get a Quote', 'corten-steel' ); ?></span>
