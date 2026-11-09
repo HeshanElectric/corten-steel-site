@@ -447,6 +447,7 @@ function corten_fallback_menu() {
 		'/projects/'     => __( 'Projects', 'corten-steel' ),
 		'/about/'        => __( 'About', 'corten-steel' ),
 		'/resources/'    => __( 'Resources', 'corten-steel' ),
+		'/blog/'         => __( 'Journal', 'corten-steel' ),
 		'/contact/'      => __( 'Contact', 'corten-steel' ),
 	);
 
@@ -1136,3 +1137,52 @@ add_filter( 'template_include', 'corten_demo_product_template', 99 );
 function corten_elementor_location_done( $location ) {
 	return function_exists( 'elementor_theme_do_location' ) && elementor_theme_do_location( $location );
 }
+
+/**
+ * Register custom field: Post Location — shown on blog cards and single posts.
+ *
+ * @param string $content_type Current post type.
+ */
+function corten_add_post_location_meta( $content_type ) {
+	add_meta_box(
+		'corten_post_location',
+		__( 'Article Location', 'corten-steel' ),
+		'corten_render_post_location_meta',
+		'post',
+		'side',
+		'default'
+	);
+}
+add_action( 'add_meta_boxes_post', 'corten_add_post_location_meta' );
+
+/**
+ * Meta box renderer for article location.
+ *
+ * @param WP_Post $post Current post object.
+ */
+function corten_render_post_location_meta( $post ) {
+	wp_nonce_field( 'corten_save_location', 'corten_location_nonce' );
+	$value = get_post_meta( $post->ID, '_corten_post_location', true );
+	echo '<label for="corten_location_field" style="display:block;margin-bottom:4px;">' . esc_html__( 'City, Country', 'corten-steel' ) . '</label>';
+	echo '<input id="corten_location_field" type="text" name="corten_location_field" value="' . esc_attr( $value ) . '" placeholder="' . esc_attr__( 'e.g. Berlin, Germany', 'corten-steel' ) . '" style="width:100%;">';
+}
+
+/**
+ * Save article location meta.
+ *
+ * @param int $post_id Post ID.
+ */
+function corten_save_post_location_meta( $post_id ) {
+	if ( ! isset( $_POST['corten_location_nonce'] ) || ! wp_verify_nonce( $_POST['corten_location_nonce'], 'corten_save_location' ) ) {
+		return;
+	}
+	if ( defined( 'DOING_AUTOSAVE' ) && DOING_AUTOSAVE ) {
+		return;
+	}
+	if ( ! current_user_can( 'edit_post', $post_id ) ) {
+		return;
+	}
+	$value = sanitize_text_field( wp_unslash( $_POST['corten_location_field'] ?? '' ) );
+	update_post_meta( $post_id, '_corten_post_location', $value );
+}
+add_action( 'save_post_post', 'corten_save_post_location_meta' );

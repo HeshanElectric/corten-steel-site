@@ -47,6 +47,7 @@ if ( ! corten_elementor_location_done( 'footer' ) ) :
 					<li><a href="<?php echo esc_url( home_url( '/projects/' ) ); ?>"><?php esc_html_e( 'Projects', 'corten-steel' ); ?></a></li>
 					<li><a href="<?php echo esc_url( home_url( '/about/' ) ); ?>"><?php esc_html_e( 'About', 'corten-steel' ); ?></a></li>
 					<li><a href="<?php echo esc_url( home_url( '/resources/' ) ); ?>"><?php esc_html_e( 'Resources', 'corten-steel' ); ?></a></li>
+					<li><a href="<?php echo esc_url( home_url( '/blog/' ) ); ?>"><?php esc_html_e( 'Journal', 'corten-steel' ); ?></a></li>
 				</ul>
 			</div>
 			<div>

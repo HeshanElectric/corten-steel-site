@@ -48,6 +48,7 @@ get_header();
 
 	<?php get_template_part( 'template-parts/stats' ); ?>
 	<?php get_template_part( 'template-parts/case-studies' ); ?>
+	<?php get_template_part( 'template-parts/blog' ); ?>
 	<?php get_template_part( 'template-parts/cta' ); ?>
 </main>
 <?php
