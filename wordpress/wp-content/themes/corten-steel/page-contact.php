@@ -128,7 +128,6 @@ $hours_rows   = corten_get_contact_hours_rows( $page_id );
 								<span class="btn__label"><?php esc_html_e( 'Send RFQ', 'corten-steel' ); ?></span>
 								<span class="btn__shine" aria-hidden="true"></span>
 							</button>
-							<p class="form-note"><?php esc_html_e( 'This native form is a fallback. Fluent Forms will replace it in production and send notification plus confirmation email.', 'corten-steel' ); ?></p>
 						</form>
 					<?php endif; ?>
 				</div>
