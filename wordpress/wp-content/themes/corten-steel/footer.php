@@ -11,7 +11,7 @@ if ( ! corten_elementor_location_done( 'footer' ) ) :
 		<div class="wrap site-footer__grid">
 			<div class="site-footer__brand">
 				<p class="site-logo__text">Heshan Power</p>
-				<p><?php esc_html_e( 'Weathering-steel planters, equipment enclosures, and custom sheet metal for landscape architects, studios, and OEM buyers in Europe and North America.', 'corten-steel' ); ?></p>
+				<p><?php esc_html_e( 'Weathering-steel planters, equipment enclosures, and custom sheet metal for studios, and OEM buyers in Europe and North America.', 'corten-steel' ); ?></p>
 				<?php
 				$socials = corten_get_social_profiles();
 				if ( $socials ) :
