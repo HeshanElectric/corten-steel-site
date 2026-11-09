@@ -1186,3 +1186,38 @@ function corten_save_post_location_meta( $post_id ) {
 	update_post_meta( $post_id, '_corten_post_location', $value );
 }
 add_action( 'save_post_post', 'corten_save_post_location_meta' );
+
+/**
+ * Add blog-prefixed rewrite rules for taxonomy archives.
+ *
+ * When permalink_structure is /blog/%postname%/ and page_for_posts is set,
+ * WordPress generates category/tag URLs with the /blog/ prefix (because
+ * taxonomy rewrite.with_front = true). We need matching rules so that
+ * /blog/category/trade-shows/ resolves correctly — without them, WP only
+ * matches /category/trade-shows/ and the filter chips 404.
+ *
+ * @see https://codex.wordpress.org/Class_Reference/WP_Rewrite
+ */
+function corten_blog_taxonomy_rewrites() {
+	add_rewrite_rule( '^blog/category/(.+?)/feed/(feed|rdf|rss|rss2|atom)/?$', 'index.php?category_name=$matches[1]&feed=$matches[2]', 'top' );
+	add_rewrite_rule( '^blog/category/(.+?)/(feed|rdf|rss|rss2|atom)/?$', 'index.php?category_name=$matches[1]&feed=$matches[2]', 'top' );
+	add_rewrite_rule( '^blog/category/(.+?)/embed/?$', 'index.php?category_name=$matches[1]&embed=true', 'top' );
+	add_rewrite_rule( '^blog/category/(.+?)/page/?([0-9]{1,})/?$', 'index.php?category_name=$matches[1]&paged=$matches[2]', 'top' );
+	add_rewrite_rule( '^blog/category/(.+?)/?$', 'index.php?category_name=$matches[1]', 'top' );
+
+	add_rewrite_rule( '^blog/tag/([^/]+)/feed/(feed|rdf|rss|rss2|atom)/?$', 'index.php?tag=$matches[1]&feed=$matches[2]', 'top' );
+	add_rewrite_rule( '^blog/tag/([^/]+)/(feed|rdf|rss|rss2|atom)/?$', 'index.php?tag=$matches[1]&feed=$matches[2]', 'top' );
+	add_rewrite_rule( '^blog/tag/([^/]+)/embed/?$', 'index.php?tag=$matches[1]&embed=true', 'top' );
+	add_rewrite_rule( '^blog/tag/([^/]+)/page/?([0-9]{1,})/?$', 'index.php?tag=$matches[1]&paged=$matches[2]', 'top' );
+	add_rewrite_rule( '^blog/tag/([^/]+)/?$', 'index.php?tag=$matches[1]', 'top' );
+}
+add_action( 'init', 'corten_blog_taxonomy_rewrites', 11 );
+
+/**
+ * Flush rewrite rules on theme activation so custom rules above take effect.
+ */
+function corten_flush_on_activation() {
+	corten_blog_taxonomy_rewrites();
+	flush_rewrite_rules( true );
+}
+add_action( 'after_switch_theme', 'corten_flush_on_activation' );
