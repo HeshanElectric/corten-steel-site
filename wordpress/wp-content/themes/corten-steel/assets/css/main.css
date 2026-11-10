@@ -2710,6 +2710,12 @@ html[data-theme="light"] .page-hero__lede.entry-content {
 	animation: gl-marquee var(--gl-duration) linear infinite;
 }
 
+/* Hold still while a card is being read. */
+.gallery-carousel:hover .gallery-carousel__track,
+.gallery-carousel__track:focus-within {
+	animation-play-state: paused;
+}
+
 .gallery-carousel__set {
 	display: grid;
 	grid-auto-flow: column;

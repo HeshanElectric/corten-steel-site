@@ -9,7 +9,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
-define( 'CORTEN_VERSION', '1.5.2' );
+define( 'CORTEN_VERSION', '1.5.3' );
 define( 'CORTEN_DIR', get_template_directory() );
 define( 'CORTEN_URI', get_template_directory_uri() );
 
