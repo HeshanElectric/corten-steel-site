@@ -3,7 +3,7 @@
  * Featured catalog cards on the homepage. Uses live product posts and
  * the same cover / gallery photos as the product templates.
  *
- * Rendered as a horizontal, scroll-snapping gallery with arrow controls.
+ * Rendered as a continuously scrolling horizontal gallery with arrow controls.
  *
  * @package Corten_Steel
  */
@@ -25,11 +25,10 @@ if ( ! $products ) {
 				<button class="gallery-nav__btn" type="button" data-gl-next aria-label="<?php esc_attr_e( 'Next items', 'corten-steel' ); ?>">›</button>
 			</div>
 		</header>
-		<div class="gallery-carousel" data-gl-carousel data-gl-interval="5500">
+		<div class="gallery-carousel" data-gl-carousel data-gl-speed="30">
 			<div class="gallery-carousel__track" data-gl-track tabindex="0" role="group" aria-label="<?php esc_attr_e( 'Featured custom work gallery', 'corten-steel' ); ?>">
 				<?php echo corten_render_product_cards( $products ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?>
 			</div>
-			<div class="gallery-carousel__progress" aria-hidden="true"><span data-gl-progress></span></div>
 		</div>
 	</div>
 </section>

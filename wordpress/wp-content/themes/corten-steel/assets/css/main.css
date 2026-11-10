@@ -2679,12 +2679,11 @@ html[data-theme="light"] .page-hero__lede.entry-content {
 	content: "";
 	position: absolute;
 	top: 0;
-	bottom: 2.25rem;
+	bottom: 0.35rem;
 	width: 2.5rem;
 	z-index: 3;
 	pointer-events: none;
-	opacity: 0;
-	transition: opacity var(--transition-fast);
+	opacity: 1;
 }
 
 .gallery-carousel::before {
@@ -2697,20 +2696,15 @@ html[data-theme="light"] .page-hero__lede.entry-content {
 	background: linear-gradient(270deg, var(--color-bg) 0%, transparent 100%);
 }
 
-.gallery-carousel[data-at-start="false"]::before,
-.gallery-carousel[data-at-end="false"]::after {
-	opacity: 1;
-}
-
 .gallery-carousel__track {
 	display: grid;
 	grid-auto-flow: column;
-	grid-auto-columns: calc((100% - 2.5rem) / 2.6);
+	grid-auto-columns: calc((100% - 2.5rem) / 3);
 	gap: 1.25rem;
 	overflow-x: auto;
 	overflow-y: hidden;
-	scroll-snap-type: x mandatory;
 	scrollbar-width: none;
+	scroll-behavior: auto;
 	padding-block: 0.35rem;
 	-webkit-overflow-scrolling: touch;
 }
@@ -2726,30 +2720,7 @@ html[data-theme="light"] .page-hero__lede.entry-content {
 
 .gallery-carousel__track.is-dragging {
 	cursor: grabbing;
-	scroll-snap-type: none;
 	user-select: none;
-}
-
-.gallery-carousel__track .product-card {
-	scroll-snap-align: start;
-}
-
-.gallery-carousel__progress {
-	position: relative;
-	height: 2px;
-	margin-top: 1.5rem;
-	background: var(--color-border);
-	overflow: hidden;
-}
-
-.gallery-carousel__progress span {
-	position: absolute;
-	top: 0;
-	left: 0;
-	height: 100%;
-	width: 33%;
-	background: linear-gradient(90deg, var(--color-rust), var(--color-cta));
-	transition: left 0.12s linear, width 0.25s ease;
 }
 
 @media (max-width: 1100px) {
