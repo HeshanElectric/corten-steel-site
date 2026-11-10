@@ -218,7 +218,7 @@
 		};
 
 		const play = () => {
-			if (reduceMotion || frame) {
+			if (frame) {
 				return;
 			}
 			lastTime = 0;
@@ -235,18 +235,6 @@
 		prevBtn?.addEventListener("click", () => step(-1));
 		nextBtn?.addEventListener("click", () => step(1));
 
-		carousel.addEventListener("pointerenter", () => {
-			paused = true;
-		});
-		carousel.addEventListener("pointerleave", () => {
-			paused = false;
-		});
-		carousel.addEventListener("focusin", () => {
-			paused = true;
-		});
-		carousel.addEventListener("focusout", () => {
-			paused = false;
-		});
 		document.addEventListener("visibilitychange", () => {
 			paused = document.hidden;
 		});
