@@ -2671,6 +2671,8 @@ html[data-theme="light"] .page-hero__lede.entry-content {
 
 .gallery-carousel {
 	position: relative;
+	--gl-gap: 1.25rem;
+	--gl-duration: 56s;
 }
 
 /* Soft edge fades hint that the row keeps scrolling. */
@@ -2696,21 +2698,34 @@ html[data-theme="light"] .page-hero__lede.entry-content {
 	background: linear-gradient(270deg, var(--color-bg) 0%, transparent 100%);
 }
 
-.gallery-carousel__track {
-	display: grid;
-	grid-auto-flow: column;
-	grid-auto-columns: calc((100% - 2.5rem) / 3);
-	gap: 1.25rem;
-	overflow-x: auto;
-	overflow-y: hidden;
-	scrollbar-width: none;
-	scroll-behavior: auto;
+.gallery-carousel__viewport {
+	container-type: inline-size;
+	overflow: hidden;
 	padding-block: 0.35rem;
-	-webkit-overflow-scrolling: touch;
 }
 
-.gallery-carousel__track::-webkit-scrollbar {
-	display: none;
+.gallery-carousel__track {
+	display: flex;
+	width: max-content;
+	animation: gl-marquee var(--gl-duration) linear infinite;
+}
+
+.gallery-carousel__set {
+	display: grid;
+	grid-auto-flow: column;
+	grid-auto-columns: calc((100cqw - 2 * var(--gl-gap)) / 3);
+	gap: var(--gl-gap);
+	padding-right: var(--gl-gap);
+}
+
+@keyframes gl-marquee {
+	from {
+		transform: translate3d(0, 0, 0);
+	}
+
+	to {
+		transform: translate3d(-50%, 0, 0);
+	}
 }
 
 .gallery-carousel__track:focus-visible {
@@ -2718,14 +2733,9 @@ html[data-theme="light"] .page-hero__lede.entry-content {
 	outline-offset: 4px;
 }
 
-.gallery-carousel__track.is-dragging {
-	cursor: grabbing;
-	user-select: none;
-}
-
 @media (max-width: 1100px) {
-	.gallery-carousel__track {
-		grid-auto-columns: calc((100% - 1.25rem) / 2);
+	.gallery-carousel__set {
+		grid-auto-columns: calc((100cqw - var(--gl-gap)) / 2);
 	}
 }
 
@@ -2739,14 +2749,10 @@ html[data-theme="light"] .page-hero__lede.entry-content {
 	.gallery-nav {
 		padding-bottom: 0;
 	}
-
-	.gallery-carousel__track {
-		grid-auto-columns: calc((100% - 1.25rem) / 2);
-	}
 }
 
 @media (max-width: 560px) {
-	.gallery-carousel__track {
-		grid-auto-columns: 82%;
+	.gallery-carousel__set {
+		grid-auto-columns: 80cqw;
 	}
 }

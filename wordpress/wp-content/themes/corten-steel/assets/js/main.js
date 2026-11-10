@@ -137,173 +137,46 @@
 		track?.scrollBy({ left: track.clientWidth * 0.8, behavior: reduceMotion ? "auto" : "smooth" });
 	});
 
-	/* ---- Featured work gallery: endless leftward marquee ---- */
+	/* ---- Featured work gallery: CSS marquee, arrows jump one card ---- */
 	document.querySelectorAll("[data-gl-carousel]").forEach((carousel) => {
 		const section = carousel.closest("section") || carousel;
-		const gallery = carousel.querySelector("[data-gl-track]");
-		if (!gallery) {
+		const track = carousel.querySelector("[data-gl-track]");
+		const set = track ? track.querySelector(".gallery-carousel__set") : null;
+		if (!track || !set) {
 			return;
 		}
 
 		const prevBtn = section.querySelector("[data-gl-prev]");
 		const nextBtn = section.querySelector("[data-gl-next]");
-		const speed = Number(carousel.getAttribute("data-gl-speed") || 30); // px per second
-		const originals = Array.from(gallery.children);
-		const behavior = reduceMotion ? "auto" : "smooth";
-		let loopWidth = 0;
-		let paused = false;
-		let frame = null;
-		let lastTime = 0;
-		let dragMoved = false;
+		// animation-delay doubles as the marquee phase: more negative = further along.
+		let delay = 0;
 
-		const cloneSet = () => {
-			originals.forEach((card) => {
-				const clone = card.cloneNode(true);
-				clone.classList.remove("reveal", "is-visible");
-				clone.setAttribute("aria-hidden", "true");
-				clone.querySelectorAll("a, button").forEach((el) => el.setAttribute("tabindex", "-1"));
-				gallery.appendChild(clone);
-			});
-		};
-
-		const setWidth = () => {
-			const firstClone = gallery.children[originals.length];
-			if (!firstClone || !originals.length) {
-				return 0;
-			}
-			return firstClone.offsetLeft - originals[0].offsetLeft;
-		};
-
-		// Keep at least one full extra set beyond the viewport so wrapping is seamless.
-		if (originals.length) {
-			cloneSet();
-			let guard = 0;
-			while (guard < 5 && gallery.clientWidth > 0 && gallery.scrollWidth < gallery.clientWidth + setWidth()) {
-				cloneSet();
-				guard += 1;
-			}
-			loopWidth = setWidth();
-		}
-
-		const cardStep = () => {
-			if (!originals.length) {
-				return gallery.clientWidth;
-			}
-			const gap = parseFloat(window.getComputedStyle(gallery).columnGap) || 0;
-			return originals[0].getBoundingClientRect().width + gap;
-		};
-
-		const wrap = () => {
-			if (loopWidth <= 0) {
+		const nudge = (direction) => {
+			const card = set.children[0];
+			const setWidth = set.getBoundingClientRect().width;
+			const duration = parseFloat(window.getComputedStyle(track).animationDuration);
+			if (!card || !setWidth || !duration) {
 				return;
 			}
-			if (gallery.scrollLeft >= loopWidth) {
-				gallery.scrollLeft -= loopWidth;
-			} else if (gallery.scrollLeft < 0) {
-				gallery.scrollLeft += loopWidth;
-			}
+			const gap = parseFloat(window.getComputedStyle(set).columnGap) || 0;
+			const cardWidth = card.getBoundingClientRect().width + gap;
+			delay -= direction * duration * (cardWidth / setWidth);
+			track.style.animationDelay = `${delay}s`;
 		};
 
-		const tick = (time) => {
-			if (!lastTime) {
-				lastTime = time;
-			}
-			const delta = Math.min(time - lastTime, 80) / 1000;
-			lastTime = time;
-			if (!paused && loopWidth > 0) {
-				gallery.scrollLeft += speed * delta;
-				wrap();
-			}
-			frame = window.requestAnimationFrame(tick);
-		};
+		nextBtn?.addEventListener("click", () => nudge(1));
+		prevBtn?.addEventListener("click", () => nudge(-1));
 
-		const play = () => {
-			if (frame) {
-				return;
-			}
-			lastTime = 0;
-			frame = window.requestAnimationFrame(tick);
-		};
-
-		const step = (direction) => {
-			if (loopWidth > 0 && direction < 0 && gallery.scrollLeft < cardStep()) {
-				gallery.scrollLeft += loopWidth;
-			}
-			gallery.scrollBy({ left: cardStep() * direction, behavior });
-		};
-
-		prevBtn?.addEventListener("click", () => step(-1));
-		nextBtn?.addEventListener("click", () => step(1));
-
-		document.addEventListener("visibilitychange", () => {
-			paused = document.hidden;
-		});
-
-		// Drag with a mouse; touch devices keep native momentum scrolling.
-		if (finePointer) {
-			let isDown = false;
-			let startX = 0;
-			let startScroll = 0;
-
-			gallery.addEventListener("pointerdown", (event) => {
-				if (event.pointerType !== "mouse") {
-					return;
-				}
-				isDown = true;
-				dragMoved = false;
-				startX = event.clientX;
-				startScroll = gallery.scrollLeft;
-				gallery.classList.add("is-dragging");
-				paused = true;
-			});
-
-			window.addEventListener("pointermove", (event) => {
-				if (!isDown) {
-					return;
-				}
-				const delta = event.clientX - startX;
-				if (Math.abs(delta) > 4) {
-					dragMoved = true;
-				}
-				gallery.scrollLeft = startScroll - delta;
-				wrap();
-			});
-
-			window.addEventListener("pointerup", () => {
-				if (!isDown) {
-					return;
-				}
-				isDown = false;
-				gallery.classList.remove("is-dragging");
-				paused = false;
-			});
-
-			gallery.addEventListener(
-				"click",
-				(event) => {
-					if (!dragMoved) {
-						return;
-					}
-					event.preventDefault();
-					event.stopPropagation();
-					dragMoved = false;
-				},
-				true
-			);
-		}
-
-		gallery.addEventListener("keydown", (event) => {
+		track.addEventListener("keydown", (event) => {
 			if (event.key === "ArrowLeft") {
 				event.preventDefault();
-				step(-1);
+				nudge(-1);
 			}
 			if (event.key === "ArrowRight") {
 				event.preventDefault();
-				step(1);
+				nudge(1);
 			}
 		});
-
-		play();
 	});
 
 	/* ---- Catalog AJAX filters ---- */

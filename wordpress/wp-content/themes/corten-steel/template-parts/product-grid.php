@@ -12,6 +12,9 @@ $products = corten_filter_catalog( array( 'limit' => 8 ) );
 if ( ! $products ) {
 	$products = array_slice( corten_get_demo_products(), 0, 8 );
 }
+
+$cards = str_replace( 'product-card reveal', 'product-card', corten_render_product_cards( $products ) );
+$duration = max( 30, count( $products ) * 15 );
 ?>
 <section class="section product-categories" aria-labelledby="catalog-title">
 	<div class="wrap">
@@ -25,9 +28,16 @@ if ( ! $products ) {
 				<button class="gallery-nav__btn" type="button" data-gl-next aria-label="<?php esc_attr_e( 'Next items', 'corten-steel' ); ?>">›</button>
 			</div>
 		</header>
-		<div class="gallery-carousel" data-gl-carousel data-gl-speed="30">
-			<div class="gallery-carousel__track" data-gl-track tabindex="0" role="group" aria-label="<?php esc_attr_e( 'Featured custom work gallery', 'corten-steel' ); ?>">
-				<?php echo corten_render_product_cards( $products ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?>
+		<div class="gallery-carousel" data-gl-carousel style="--gl-duration: <?php echo esc_attr( $duration ); ?>s">
+			<div class="gallery-carousel__viewport">
+				<div class="gallery-carousel__track" data-gl-track tabindex="0" role="group" aria-label="<?php esc_attr_e( 'Featured custom work gallery', 'corten-steel' ); ?>">
+					<div class="gallery-carousel__set">
+						<?php echo $cards; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?>
+					</div>
+					<div class="gallery-carousel__set" aria-hidden="true">
+						<?php echo $cards; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?>
+					</div>
+				</div>
 			</div>
 		</div>
 	</div>
