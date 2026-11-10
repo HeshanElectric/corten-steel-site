@@ -137,6 +137,166 @@
 		track?.scrollBy({ left: track.clientWidth * 0.8, behavior: reduceMotion ? "auto" : "smooth" });
 	});
 
+	/* ---- Featured work gallery ---- */
+	document.querySelectorAll("[data-gl-carousel]").forEach((carousel) => {
+		const section = carousel.closest("section") || carousel;
+		const gallery = carousel.querySelector("[data-gl-track]");
+		if (!gallery) {
+			return;
+		}
+
+		const prevBtn = section.querySelector("[data-gl-prev]");
+		const nextBtn = section.querySelector("[data-gl-next]");
+		const progress = section.querySelector("[data-gl-progress]");
+		const interval = Number(carousel.getAttribute("data-gl-interval") || 0);
+		const behavior = reduceMotion ? "auto" : "smooth";
+		let timer = null;
+		let dragMoved = false;
+
+		const cardStep = () => {
+			const first = gallery.querySelector(".product-card");
+			if (!first) {
+				return gallery.clientWidth;
+			}
+			const gap = parseFloat(window.getComputedStyle(gallery).columnGap) || 0;
+			return first.getBoundingClientRect().width + gap;
+		};
+
+		const maxScroll = () => Math.max(0, gallery.scrollWidth - gallery.clientWidth);
+
+		const syncState = () => {
+			const max = maxScroll();
+			const left = gallery.scrollLeft;
+			carousel.setAttribute("data-at-start", left <= 4 ? "true" : "false");
+			carousel.setAttribute("data-at-end", left >= max - 4 ? "true" : "false");
+
+			if (prevBtn) {
+				prevBtn.disabled = left <= 4;
+			}
+			if (nextBtn) {
+				nextBtn.disabled = left >= max - 4;
+			}
+			if (progress) {
+				const ratio = max > 0 ? gallery.clientWidth / gallery.scrollWidth : 1;
+				const offset = max > 0 ? left / max : 0;
+				progress.style.width = `${Math.min(100, ratio * 100)}%`;
+				progress.style.left = `${offset * (1 - ratio) * 100}%`;
+			}
+		};
+
+		const step = (direction) => {
+			gallery.scrollBy({ left: cardStep() * direction, behavior });
+		};
+
+		const stop = () => {
+			if (timer) {
+				window.clearInterval(timer);
+				timer = null;
+			}
+		};
+
+		const start = () => {
+			stop();
+			if (reduceMotion || !interval || maxScroll() <= 0) {
+				return;
+			}
+			timer = window.setInterval(() => {
+				if (gallery.scrollLeft >= maxScroll() - 4) {
+					gallery.scrollTo({ left: 0, behavior });
+					return;
+				}
+				step(1);
+			}, interval);
+		};
+
+		prevBtn?.addEventListener("click", () => {
+			stop();
+			step(-1);
+		});
+		nextBtn?.addEventListener("click", () => {
+			stop();
+			step(1);
+		});
+
+		gallery.addEventListener("scroll", syncState, { passive: true });
+		carousel.addEventListener("pointerenter", stop);
+		carousel.addEventListener("pointerleave", start);
+		carousel.addEventListener("focusin", stop);
+		carousel.addEventListener("focusout", start);
+		document.addEventListener("visibilitychange", () => (document.hidden ? stop() : start()));
+
+		// Drag with a mouse; touch devices keep native momentum scrolling.
+		if (finePointer) {
+			let isDown = false;
+			let startX = 0;
+			let startScroll = 0;
+
+			gallery.addEventListener("pointerdown", (event) => {
+				if (event.pointerType !== "mouse") {
+					return;
+				}
+				isDown = true;
+				dragMoved = false;
+				startX = event.clientX;
+				startScroll = gallery.scrollLeft;
+				gallery.classList.add("is-dragging");
+				stop();
+			});
+
+			window.addEventListener("pointermove", (event) => {
+				if (!isDown) {
+					return;
+				}
+				const delta = event.clientX - startX;
+				if (Math.abs(delta) > 4) {
+					dragMoved = true;
+				}
+				gallery.scrollLeft = startScroll - delta;
+			});
+
+			window.addEventListener("pointerup", () => {
+				if (!isDown) {
+					return;
+				}
+				isDown = false;
+				gallery.classList.remove("is-dragging");
+				if (dragMoved) {
+					const index = Math.round(gallery.scrollLeft / cardStep());
+					gallery.scrollTo({ left: index * cardStep(), behavior });
+				}
+				start();
+			});
+
+			gallery.addEventListener(
+				"click",
+				(event) => {
+					if (dragMoved) {
+						event.preventDefault();
+						event.stopPropagation();
+						dragMoved = false;
+					}
+				},
+				true
+			);
+		}
+
+		gallery.addEventListener("keydown", (event) => {
+			if (event.key === "ArrowLeft") {
+				event.preventDefault();
+				stop();
+				step(-1);
+			}
+			if (event.key === "ArrowRight") {
+				event.preventDefault();
+				stop();
+				step(1);
+			}
+		});
+
+		syncState();
+		start();
+	});
+
 	/* ---- Catalog AJAX filters ---- */
 	const filterForm = document.querySelector("[data-product-filters]");
 	const grid = document.querySelector("[data-product-grid]");

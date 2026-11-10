@@ -2618,3 +2618,164 @@ html[data-theme="light"] .page-hero__lede.entry-content {
 		font-size: 1.05rem;
 	}
 }
+
+/* ------------------------------------------------------------------
+   Featured work — horizontal gallery carousel
+   ------------------------------------------------------------------ */
+
+.section-head--split {
+	grid-template-columns: 1fr auto;
+	align-items: end;
+	gap: 1.5rem;
+}
+
+.section-head--split .eyebrow {
+	margin-bottom: 0.5rem;
+}
+
+.gallery-nav {
+	display: flex;
+	gap: 0.5rem;
+	padding-bottom: 0.35rem;
+}
+
+.gallery-nav__btn {
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	width: 2.75rem;
+	height: 2.75rem;
+	padding: 0;
+	border: 1px solid var(--color-border);
+	border-radius: 50%;
+	background: var(--color-bg-elevated);
+	color: var(--color-text);
+	font-size: 1.15rem;
+	line-height: 1;
+	cursor: pointer;
+	transition: color var(--transition-fast), border-color var(--transition-fast), background-color var(--transition-fast), transform var(--transition-fast), opacity var(--transition-fast);
+}
+
+.gallery-nav__btn:hover:not(:disabled),
+.gallery-nav__btn:focus-visible:not(:disabled) {
+	border-color: var(--color-rust);
+	background: var(--color-rust);
+	color: var(--color-on-accent);
+	transform: translateY(-2px);
+}
+
+.gallery-nav__btn:disabled {
+	opacity: 0.35;
+	cursor: not-allowed;
+}
+
+.gallery-carousel {
+	position: relative;
+}
+
+/* Soft edge fades hint that the row keeps scrolling. */
+.gallery-carousel::before,
+.gallery-carousel::after {
+	content: "";
+	position: absolute;
+	top: 0;
+	bottom: 2.25rem;
+	width: 2.5rem;
+	z-index: 3;
+	pointer-events: none;
+	opacity: 0;
+	transition: opacity var(--transition-fast);
+}
+
+.gallery-carousel::before {
+	left: 0;
+	background: linear-gradient(90deg, var(--color-bg) 0%, transparent 100%);
+}
+
+.gallery-carousel::after {
+	right: 0;
+	background: linear-gradient(270deg, var(--color-bg) 0%, transparent 100%);
+}
+
+.gallery-carousel[data-at-start="false"]::before,
+.gallery-carousel[data-at-end="false"]::after {
+	opacity: 1;
+}
+
+.gallery-carousel__track {
+	display: grid;
+	grid-auto-flow: column;
+	grid-auto-columns: calc((100% - 2.5rem) / 3);
+	gap: 1.25rem;
+	overflow-x: auto;
+	overflow-y: hidden;
+	scroll-snap-type: x mandatory;
+	scrollbar-width: none;
+	padding-block: 0.35rem;
+	-webkit-overflow-scrolling: touch;
+}
+
+.gallery-carousel__track::-webkit-scrollbar {
+	display: none;
+}
+
+.gallery-carousel__track:focus-visible {
+	outline: 2px solid var(--color-rust);
+	outline-offset: 4px;
+}
+
+.gallery-carousel__track.is-dragging {
+	cursor: grabbing;
+	scroll-snap-type: none;
+	user-select: none;
+}
+
+.gallery-carousel__track .product-card {
+	scroll-snap-align: start;
+}
+
+.gallery-carousel__progress {
+	position: relative;
+	height: 2px;
+	margin-top: 1.5rem;
+	background: var(--color-border);
+	overflow: hidden;
+}
+
+.gallery-carousel__progress span {
+	position: absolute;
+	top: 0;
+	left: 0;
+	height: 100%;
+	width: 33%;
+	background: linear-gradient(90deg, var(--color-rust), var(--color-cta));
+	transition: left 0.12s linear, width 0.25s ease;
+}
+
+@media (max-width: 1100px) {
+	.gallery-carousel__track {
+		grid-auto-columns: calc((100% - 1.25rem) / 2);
+	}
+}
+
+@media (max-width: 800px) {
+	.section-head--split {
+		grid-template-columns: 1fr;
+		align-items: start;
+		gap: 1rem;
+	}
+
+	.gallery-nav {
+		padding-bottom: 0;
+	}
+
+	.gallery-carousel__track {
+		grid-auto-columns: calc((100% - 1.25rem) / 2);
+	}
+}
+
+@media (max-width: 560px) {
+	.gallery-carousel__track {
+		grid-auto-columns: 82%;
+	}
+}
